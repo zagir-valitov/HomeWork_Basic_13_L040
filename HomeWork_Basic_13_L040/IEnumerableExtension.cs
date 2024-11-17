@@ -11,22 +11,30 @@ namespace HomeWork_Basic_13_L040
     {        
         public static IEnumerable<TSource> Top<TSource>(this IEnumerable<TSource> source, int percent = 50)
         {
-            if (percent < 1 || percent > 100)
+            if (source.Count() == 0)
             {
-                Console.WriteLine("--- !!! ---");
-            }            
-            percent = Convert.ToInt32(Convert.ToDouble(percent) * Convert.ToDouble(source.Count()) * 0.01);
-            return source.TakeLast(percent);
-        }
-        public static IEnumerable<TSource> Top<TSource, TResult>(this IEnumerable<TSource> source, int percent, Func<TSource, TResult> selector)
-        {
+                throw new ArgumentNullException("Сollection is empty");
+            }
             if (percent < 1 || percent > 100)
             {
                 throw new ArgumentException("The argument must be in the range from 1 - 100");
             }            
-            source = source.OrderByDescending(selector);     
-            percent = Convert.ToInt32(Convert.ToDouble(percent) * Convert.ToDouble(source.Count()) * 0.01);
-            return source.Take(percent);
+            var number = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(percent) * Convert.ToDouble(source.Count()) * 0.01));
+            return source.TakeLast(number);
+        }
+        public static IEnumerable<TSource> Top<TSource, TResult>(this IEnumerable<TSource> source, int percent, Func<TSource, TResult> selector)
+        {
+            if (source.Count() == 0)
+            {
+                throw new ArgumentNullException("Сollection is empty");
+            }
+            if (percent < 1 || percent > 100)
+            {
+                throw new ArgumentException("The argument must be in the range from 1 - 100");
+            }            
+            source = source.OrderByDescending(selector);
+            var number = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(percent) * Convert.ToDouble(source.Count()) * 0.01));
+            return source.Take(number);
         }        
     }
 }
